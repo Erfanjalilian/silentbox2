@@ -27,7 +27,7 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    if (!consumeOtp(phone, code)) {
+    if (!(await consumeOtp(phone, code))) {
       return NextResponse.json(
         { error: "کد نامعتبر یا منقضی شده است." },
         { status: 401 },

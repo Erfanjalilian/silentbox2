@@ -60,7 +60,7 @@ export async function POST(request: Request) {
       );
     }
 
-    const cool = otpCooldownRemainingSec(phone);
+    const cool = await otpCooldownRemainingSec(phone);
     if (cool > 0) {
       return NextResponse.json(
         { error: `لطفاً ${cool} ثانیه دیگر دوباره تلاش کنید.` },
@@ -69,7 +69,7 @@ export async function POST(request: Request) {
     }
 
     const code = randomOtp();
-    saveOtp(phone, code);
+    await saveOtp(phone, code);
 
     const codeParameterName =
       process.env.SMS_IR_VERIFY_CODE_PARAM?.trim() || "Code";
@@ -83,7 +83,7 @@ export async function POST(request: Request) {
     });
 
     if (!sms.ok) {
-      clearOtp(phone);
+      await clearOtp(phone);
 
       const upstream =
         sms.providerMessage?.trim() ||
@@ -155,7 +155,7 @@ export async function POST(request: Request) {
       );
     }
 
-    markOtpSent(phone);
+    await markOtpSent(phone);
 
     return NextResponse.json({
       ok: true,

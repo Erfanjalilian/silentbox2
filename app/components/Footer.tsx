@@ -1,6 +1,4 @@
-// components/Footer.tsx
-//add the enamad
-// my name is Erfan jaliliyan
+
 
 import React from 'react';
 import Link from 'next/link';
@@ -177,8 +175,6 @@ const Footer: React.FC = () => {
                 alt="نماد اعتماد الکترونیکی اینماد"
                 className="h-12 w-auto"
                 style={{ cursor: 'pointer' }}
-                code="4VbFUET0EhFSIdEwORZLdDHgIpBiK5d9"
-                referrerPolicy="origin"
               />
             </a>
           </div>
