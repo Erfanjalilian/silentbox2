@@ -164,17 +164,18 @@ const Footer: React.FC = () => {
               <span className="text-gray-600 text-xs hover:text-sky-400 transition-colors cursor-pointer">حریم خصوصی</span>
             </div>
             <a
-              href="https://trustseal.enamad.ir/?id=6189749&Code=4VbFUET0EhFSIdEwORZLdDHgIpBiK5d9"
+              href="https://trustseal.enamad.ir/?id=6304227&Code=KwYNMa0GIbiKQpxhkTicST9aAv7zIxKi"
               target="_blank"
               rel="noopener noreferrer"
               referrerPolicy="origin"
               className="inline-flex items-center justify-center rounded-lg border border-slate-700 bg-slate-950/80 p-2"
             >
               <img
-                src="https://trustseal.enamad.ir/logo.aspx?id=6189749&Code=4VbFUET0EhFSIdEwORZLdDHgIpBiK5d9"
+                src="https://trustseal.enamad.ir/logo.aspx?id=6304227&Code=KwYNMa0GIbiKQpxhkTicST9aAv7zIxKi"
                 alt="نماد اعتماد الکترونیکی اینماد"
                 className="h-12 w-auto"
                 style={{ cursor: 'pointer' }}
+                data-code="KwYNMa0GIbiKQpxhkTicST9aAv7zIxKi"
               />
             </a>
           </div>

@@ -9,7 +9,6 @@ import Link from 'next/link';
 import { useState, useEffect } from 'react';
 import { PhotoIcon, StarIcon, ShoppingCartIcon, CheckCircleIcon } from '@heroicons/react/24/outline';
 import { StarIcon as StarSolidIcon } from '@heroicons/react/24/solid';
-import { useCart } from '@/contexts/CartContext';
 
 interface Product {
   id: string;
@@ -57,11 +56,8 @@ async function getProduct(id: string): Promise<Product | null> {
 
 export default function ProductPage() {
   const params = useParams();
-  const { addToCart, getItemQuantity } = useCart();
   const [product, setProduct] = useState<Product | null>(null);
   const [loading, setLoading] = useState(true);
-  const [quantity, setQuantity] = useState(1);
-  const [showSuccess, setShowSuccess] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   const productId = params?.id as string;
@@ -78,26 +74,7 @@ export default function ProductPage() {
     }
   }, [productId]);
 
-  const handleAddToCart = () => {
-    if (product && product.inStock) {
-      addToCart({
-        id: product.id,
-        name: product.name,
-        price: product.price,
-        originalPrice: product.originalPrice,
-        discount: product.discount,
-        quantity: quantity,
-        imageUrl: product.imageUrl,
-        category: product.category,
-        inStock: product.inStock,
-      });
-      
-      setShowSuccess(true);
-      setTimeout(() => setShowSuccess(false), 3000);
-    }
-  };
-
-  const currentQuantityInCart = product ? getItemQuantity(product.id) : 0;
+  
 
   const renderStars = () => {
     let rating = product?.rating || 0;
@@ -252,53 +229,19 @@ export default function ProductPage() {
                 )}
               </div>
 
-              {product.inStock && (
-                <div className="mb-6">
-                  <label className="block text-gray-100 text-sm font-semibold mb-3">تعداد:</label>
-                  <div className="flex items-center gap-3">
-                    <button
-                      onClick={() => setQuantity(Math.max(1, quantity - 1))}
-                      className="w-10 h-10 bg-gray-700 text-gray-100 rounded-lg hover:bg-gray-600 transition-colors"
-                    >
-                      -
-                    </button>
-                    <span className="text-gray-100 text-lg font-semibold w-12 text-center">{quantity}</span>
-                    <button
-                      onClick={() => setQuantity(quantity + 1)}
-                      className="w-10 h-10 bg-gray-700 text-gray-100 rounded-lg hover:bg-gray-600 transition-colors"
-                    >
-                      +
-                    </button>
-                  </div>
-                </div>
-              )}
-
-              <button
-                onClick={handleAddToCart}
-                disabled={!product.inStock}
-                className={`w-full py-3 rounded-lg font-semibold transition-all duration-300 flex items-center justify-center gap-2 ${
-                  product.inStock
-                    ? 'bg-green-500 hover:bg-green-600 text-white cursor-pointer transform hover:scale-105'
-                    : 'bg-gray-700 text-gray-500 cursor-not-allowed'
-                }`}
-              >
-                <ShoppingCartIcon className="h-5 w-5" />
-                {product.inStock 
-                  ? currentQuantityInCart > 0 
-                    ? `افزودن مجدد به سبد خرید (${currentQuantityInCart} عدد در سبد)`
-                    : 'افزودن به سبد خرید'
-                  : 'ناموجود'
-                }
-              </button>
-
-              {currentQuantityInCart > 0 && (
+              <div className="mb-6">
                 <Link
-                  href="/cart"
-                  className="block text-center mt-4 text-sky-400 hover:text-sky-300 text-sm transition-colors"
+                  href="/payment"
+                  className={`w-full py-3 rounded-lg font-semibold transition-all duration-300 flex items-center justify-center gap-2 ${
+                    product.inStock
+                      ? 'bg-green-500 hover:bg-green-600 text-white cursor-pointer'
+                      : 'bg-gray-700 text-gray-500 cursor-not-allowed'
+                  }`}
                 >
-                  مشاهده سبد خرید
+                  <ShoppingCartIcon className="h-5 w-5" />
+                  {product.inStock ? 'اطلاعات پرداخت' : 'ناموجود'}
                 </Link>
-              )}
+              </div>
             </div>
           </div>
         </div>

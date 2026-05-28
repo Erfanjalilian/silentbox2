@@ -62,7 +62,7 @@ const Header: React.FC = () => {
             <div className="flex items-center gap-3 sm:gap-5">
               {/* Cart Button with badge - Now a Link to cart page */}
               <Link 
-                href="/cart" 
+                href="/payment" 
                 className="relative text-gray-300 hover:text-sky-400 transition-colors"
               >
                 <ShoppingCartIcon className="h-5 w-5 sm:h-6 sm:w-6" />
@@ -167,18 +167,13 @@ const Header: React.FC = () => {
                 درباره ما
               </Link>
               
-              {/* Cart link in mobile menu */}
+              {/* Payment link in mobile menu (cart removed) */}
               <Link 
-                href="/cart" 
+                href="/payment" 
                 onClick={toggleMobileMenu}
                 className="flex items-center justify-between text-gray-300 hover:text-sky-400 transition-colors duration-200 font-medium text-lg"
               >
-                <span>سبد خرید</span>
-                {cartCount > 0 && (
-                  <span className="bg-green-500 text-white text-xs font-bold rounded-full min-w-[20px] h-5 flex items-center justify-center px-1.5">
-                    {cartCount}
-                  </span>
-                )}
+                <span>پرداخت</span>
               </Link>
               
               <div className="pt-6 border-t border-sky-500/30 space-y-4">

@@ -215,7 +215,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
               }`}
             >
               <ShoppingCartIcon className="h-3.5 w-3.5" />
-              {product.inStock ? 'افزودن به سبد' : 'ناموجود'}
+              {product.inStock ? 'مشاهده محصول' : 'ناموجود'}
             </Link>
           </div>
         </div>
@@ -316,7 +316,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
             }`}
           >
             <ShoppingCartIcon className="h-4 w-4" />
-            {product.inStock ? 'افزودن به سبد' : 'ناموجود'}
+            {product.inStock ? 'مشاهده محصول' : 'ناموجود'}
           </Link>
         </div>
       </div>
