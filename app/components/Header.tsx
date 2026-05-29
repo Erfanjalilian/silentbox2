@@ -3,16 +3,12 @@
 
 import React, { useState } from 'react';
 import Link from 'next/link';
-import { ShoppingCartIcon, UserIcon, Bars3Icon, XMarkIcon } from '@heroicons/react/24/outline';
-import { useCart } from '@/contexts/CartContext';
+import { UserIcon, Bars3Icon, XMarkIcon } from '@heroicons/react/24/outline';
 import { useAuth } from '@/contexts/AuthContext';
 
 const Header: React.FC = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  const { getCartCount } = useCart();
   const { user, isAuthenticated, isLoading } = useAuth();
-  
-  const cartCount = getCartCount();
 
   const toggleMobileMenu = () => {
     setIsMobileMenuOpen(!isMobileMenuOpen);
@@ -60,17 +56,17 @@ const Header: React.FC = () => {
 
             {/* Right side icons: Cart, User, Menu (mobile) */}
             <div className="flex items-center gap-3 sm:gap-5">
-              {/* Cart Button with badge - Now a Link to cart page */}
-              <Link 
-                href="/payment" 
-                className="relative text-gray-300 hover:text-sky-400 transition-colors"
+              <Link href="/payment">
+              {/* Payment method button */}
+              <button
+                type="button"
+                onClick={() => {
+                  // placeholder action for payment method
+                }}
+                className="rounded-full bg-sky-500/10 px-4 py-2 text-sm font-semibold text-sky-100 hover:bg-sky-500/20 transition-colors duration-200"
               >
-                <ShoppingCartIcon className="h-5 w-5 sm:h-6 sm:w-6" />
-                {cartCount > 0 && (
-                  <span className="absolute -top-2 -right-2 bg-green-500 text-white text-xs font-bold rounded-full min-w-[18px] h-[18px] flex items-center justify-center px-1">
-                    {cartCount > 99 ? '99+' : cartCount}
-                  </span>
-                )}
+                شیوه ی پرداخت
+              </button>
               </Link>
 
               {isAuthenticated && user?.role === 'admin' && (

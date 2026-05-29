@@ -121,7 +121,7 @@ const Footer: React.FC = () => {
             <ul className="space-y-3">
               <li className="flex items-start gap-3 text-gray-400">
                 <MapPinIcon className="h-5 w-5 text-sky-400 flex-shrink-0 mt-0.5" />
-                <span className="text-sm">شاداباد کوی ۱۷ شهریور خ سرحدی جنوبی کوچه چوپان پ۱۹ واحد ۷</span>
+                <span className="text-sm">شاداباد کوی ۱۷ شهریور خ سرحدی جنوبی کوچه چوپان </span>
               </li>
               <li className="flex items-center gap-3 text-gray-400">
                 <PhoneArrowDownLeftIcon className="h-5 w-5 text-sky-400 flex-shrink-0" />

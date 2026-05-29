@@ -7,7 +7,7 @@ import { notFound, useParams } from 'next/navigation';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useState, useEffect } from 'react';
-import { PhotoIcon, StarIcon, ShoppingCartIcon, CheckCircleIcon } from '@heroicons/react/24/outline';
+import { PhotoIcon, StarIcon } from '@heroicons/react/24/outline';
 import { StarIcon as StarSolidIcon } from '@heroicons/react/24/solid';
 
 interface Product {
@@ -74,8 +74,6 @@ export default function ProductPage() {
     }
   }, [productId]);
 
-  
-
   const renderStars = () => {
     let rating = product?.rating || 0;
     if (isNaN(rating) || rating < 0) rating = 0;
@@ -129,13 +127,6 @@ export default function ProductPage() {
       
       <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-8 md:py-16">
         <div className="max-w-6xl mx-auto">
-          {showSuccess && (
-            <div className="fixed top-20 right-4 z-50 bg-green-500 text-white px-6 py-3 rounded-lg shadow-lg flex items-center gap-2 animate-slide-in">
-              <CheckCircleIcon className="h-5 w-5" />
-              <span>محصول به سبد خرید اضافه شد!</span>
-            </div>
-          )}
-
           <Link 
             href="/products" 
             className="inline-flex items-center gap-2 text-sky-400 hover:text-sky-300 mb-6 transition-colors"
@@ -232,14 +223,9 @@ export default function ProductPage() {
               <div className="mb-6">
                 <Link
                   href="/payment"
-                  className={`w-full py-3 rounded-lg font-semibold transition-all duration-300 flex items-center justify-center gap-2 ${
-                    product.inStock
-                      ? 'bg-green-500 hover:bg-green-600 text-white cursor-pointer'
-                      : 'bg-gray-700 text-gray-500 cursor-not-allowed'
-                  }`}
+                  className="w-full inline-flex py-3 rounded-lg font-semibold transition-all duration-300 items-center justify-center gap-2 bg-slate-800 text-slate-100 hover:bg-slate-700"
                 >
-                  <ShoppingCartIcon className="h-5 w-5" />
-                  {product.inStock ? 'اطلاعات پرداخت' : 'ناموجود'}
+                  مشاهده اطلاعات پرداخت
                 </Link>
               </div>
             </div>
@@ -247,21 +233,6 @@ export default function ProductPage() {
         </div>
       </div>
 
-      <style jsx>{`
-        @keyframes slideIn {
-          from {
-            transform: translateX(100%);
-            opacity: 0;
-          }
-          to {
-            transform: translateX(0);
-            opacity: 1;
-          }
-        }
-        .animate-slide-in {
-          animation: slideIn 0.3s ease-out;
-        }
-      `}</style>
     </div>
   );
 }
