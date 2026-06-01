@@ -6,16 +6,21 @@ import { useRouter, useSearchParams } from 'next/navigation';
 import { FunnelIcon, XMarkIcon } from '@heroicons/react/24/outline';
 import ProductCard from './ProductCard';
 
+// تایپ کامل محصول با فیلدهای جدید
 interface Product {
   id: string;
   name: string;
-  price: number | null; // ✅ اضافه کردن null به type
+  price: number | null;
   originalPrice: number;
   discount: number;
+  discountPercent?: number; // اضافه شد
   rating: number;
   reviewCount: number;
+  salesCount?: number; // اضافه شد
   description: string;
+  features?: string[]; // اضافه شد
   imageUrl: string;
+  images?: string[]; // اضافه شد
   category: string;
   inStock: boolean;
   isBestSeller: boolean;
@@ -31,11 +36,17 @@ interface ProductsClientProps {
   };
 }
 
+// تایپ برای پاسخ API
+interface ProductsResponse {
+  products?: Product[];
+  total?: number;
+}
+
 const ProductsClient: React.FC<ProductsClientProps> = ({ initialProducts, total, filters }) => {
   const router = useRouter();
   const searchParams = useSearchParams();
   const [isMobileFilterOpen, setIsMobileFilterOpen] = useState(false);
-  const [products, setProducts] = useState(initialProducts);
+  const [products, setProducts] = useState<Product[]>(initialProducts);
   const [loading, setLoading] = useState(false);
   
   const [currentFilters, setCurrentFilters] = useState({
@@ -57,15 +68,21 @@ const ProductsClient: React.FC<ProductsClientProps> = ({ initialProducts, total,
     { value: 'price_asc', label: 'ارزان‌ترین' },
     { value: 'price_desc', label: 'گران‌ترین' },
     { value: 'discount_desc', label: 'بیشترین تخفیف' },
-    { value: 'rating_desc', label: 'بالاترین امتیاز' }
+    { value: 'rating_desc', label: 'بالاترین امتیاز' },
+    { value: 'sales_desc', label: 'پرفروش‌ترین' } // اضافه شد
   ];
 
-  // ✅ اصلاح شده: تابع formatPrice با اعتبارسنجی کامل
+  // تابع formatPrice با اعتبارسنجی کامل
   const formatPrice = (price: number | null | undefined): string => {
     if (price === null || price === undefined || isNaN(price)) {
       return 'تماس بگیرید';
     }
     return price.toLocaleString('fa-IR') + ' تومان';
+  };
+
+  // تابع helper برای گرفتن discount درصد
+  const getDiscountPercent = (product: Product): number => {
+    return product.discountPercent || product.discount || 0;
   };
 
   // Fetch products when filters change
@@ -81,17 +98,42 @@ const ProductsClient: React.FC<ProductsClientProps> = ({ initialProducts, total,
       }
       if (currentFilters.minPrice) params.set('minPrice', currentFilters.minPrice);
       if (currentFilters.maxPrice) params.set('maxPrice', currentFilters.maxPrice);
-      if (currentFilters.inStock) params.set('inStock', currentFilters.inStock);
+      if (currentFilters.inStock === 'true') params.set('inStock', currentFilters.inStock);
       if (currentFilters.sortBy && currentFilters.sortBy !== 'newest') {
         params.set('sortBy', currentFilters.sortBy);
       }
 
       try {
         const response = await fetch(`/api/products?${params.toString()}`);
+        
+        if (!response.ok) {
+          throw new Error('Failed to fetch products');
+        }
+        
         const data = await response.json();
-        // ✅ اطمینان از اینکه products همیشه آرایه است
-        const fetchedProducts = data.products || data || [];
-        setProducts(fetchedProducts);
+        
+        // پردازش پاسخ API (هر دو حالت ممکن)
+        let fetchedProducts: Product[] = [];
+        
+        if (Array.isArray(data)) {
+          // حالت اول: پاسخ مستقیم آرایه است
+          fetchedProducts = data;
+        } else if (data.products && Array.isArray(data.products)) {
+          // حالت دوم: پاسخ با ساختار { products, total, filters }
+          fetchedProducts = data.products;
+        } else {
+          fetchedProducts = [];
+        }
+        
+        // اطمینان از وجود فیلدهای جدید در محصولات
+        const normalizedProducts = fetchedProducts.map(product => ({
+          ...product,
+          discountPercent: product.discountPercent ?? product.discount ?? 0,
+          salesCount: product.salesCount ?? 0,
+          images: product.images ?? (product.imageUrl ? [product.imageUrl] : [])
+        }));
+        
+        setProducts(normalizedProducts);
       } catch (error) {
         console.error('Error fetching products:', error);
         setProducts([]);
@@ -112,7 +154,7 @@ const ProductsClient: React.FC<ProductsClientProps> = ({ initialProducts, total,
     if (updatedFilters.category && updatedFilters.category !== 'all') params.set('category', updatedFilters.category);
     if (updatedFilters.minPrice) params.set('minPrice', updatedFilters.minPrice);
     if (updatedFilters.maxPrice) params.set('maxPrice', updatedFilters.maxPrice);
-    if (updatedFilters.inStock) params.set('inStock', updatedFilters.inStock);
+    if (updatedFilters.inStock === 'true') params.set('inStock', updatedFilters.inStock);
     if (updatedFilters.sortBy && updatedFilters.sortBy !== 'newest') params.set('sortBy', updatedFilters.sortBy);
 
     const newUrl = `${window.location.pathname}${params.toString() ? `?${params.toString()}` : ''}`;
@@ -130,11 +172,11 @@ const ProductsClient: React.FC<ProductsClientProps> = ({ initialProducts, total,
     router.push('/products', { scroll: false });
   };
 
-  const hasActiveFilters = () => {
+  const hasActiveFilters = (): boolean => {
     return currentFilters.category !== 'all' || 
-           currentFilters.minPrice || 
-           currentFilters.maxPrice || 
-           currentFilters.inStock || 
+           currentFilters.minPrice !== '' || 
+           currentFilters.maxPrice !== '' || 
+           currentFilters.inStock !== '' || 
            currentFilters.sortBy !== 'newest';
   };
 

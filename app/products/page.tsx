@@ -4,23 +4,28 @@ import Link from 'next/link';
 import ProductCard from '@/app/components/ProductCard';
 import ProductsClient from '@/app/components/ProductsClient';
 
-interface Product {
+// تایپ کامل محصول با فیلدهای جدید
+export interface Product {
   id: string;
   name: string;
   price: number;
   originalPrice: number;
   discount: number;
+  discountPercent?: number; // اضافه شد
   rating: number;
   reviewCount: number;
+  salesCount?: number; // اضافه شد
   description: string;
+  features?: string[]; // اضافه شد
   imageUrl: string;
+  images?: string[]; // اضافه شد (آرایه عکس‌ها)
   category: string;
   inStock: boolean;
   isBestSeller: boolean;
   badge: string | null;
 }
 
-interface ProductsResponse {
+export interface ProductsResponse {
   products: Product[];
   total: number;
   filters: {
@@ -29,20 +34,87 @@ interface ProductsResponse {
   };
 }
 
+// Props برای ProductsPage
+interface ProductsPageProps {
+  searchParams: Promise<{ [key: string]: string | string[] | undefined }> | { [key: string]: string | string[] | undefined };
+}
+
+// تابع دریافت محصولات از API
 async function getProducts(searchParams: { [key: string]: string | string[] | undefined }): Promise<ProductsResponse> {
-  const { queryProducts } = await import('@/lib/data/products');
-  return queryProducts({
-    category:
-      typeof searchParams.category === 'string' ? searchParams.category : undefined,
-    minPrice:
-      typeof searchParams.minPrice === 'string' ? searchParams.minPrice : undefined,
-    maxPrice:
-      typeof searchParams.maxPrice === 'string' ? searchParams.maxPrice : undefined,
-    inStock:
-      typeof searchParams.inStock === 'string' ? searchParams.inStock : undefined,
-    sortBy:
-      typeof searchParams.sortBy === 'string' ? searchParams.sortBy : undefined,
-  });
+  try {
+    // ساخت query string
+    const params = new URLSearchParams();
+    params.append('getAll', 'true');
+    
+    if (searchParams.category && searchParams.category !== 'all') {
+      params.append('category', searchParams.category as string);
+    }
+    if (searchParams.minPrice) {
+      params.append('minPrice', searchParams.minPrice as string);
+    }
+    if (searchParams.maxPrice) {
+      params.append('maxPrice', searchParams.maxPrice as string);
+    }
+    if (searchParams.inStock) {
+      params.append('inStock', searchParams.inStock as string);
+    }
+    if (searchParams.sortBy) {
+      params.append('sortBy', searchParams.sortBy as string);
+    }
+    
+    const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000'}/api/products?${params.toString()}`, {
+      cache: 'no-store',
+      next: { revalidate: 60 }
+    });
+    
+    if (!response.ok) {
+      throw new Error('Failed to fetch products');
+    }
+    
+    const data = await response.json();
+    
+    // اگر response مستقیم products باشه (برای getAll=true)
+    if (Array.isArray(data)) {
+      return {
+        products: data.map(p => ({
+          ...p,
+          discountPercent: p.discountPercent ?? p.discount ?? 0,
+          salesCount: p.salesCount ?? 0,
+          images: p.images ?? (p.imageUrl ? [p.imageUrl] : [])
+        })),
+        total: data.length,
+        filters: {
+          categories: ['all', 'silentbox', 'accessory'],
+          priceRange: { min: 0, max: 50000000 }
+        }
+      };
+    }
+    
+    // اگر response با ساختار { products, total, filters } باشه
+    return {
+      products: data.products?.map((p: any) => ({
+        ...p,
+        discountPercent: p.discountPercent ?? p.discount ?? 0,
+        salesCount: p.salesCount ?? 0,
+        images: p.images ?? (p.imageUrl ? [p.imageUrl] : [])
+      })) || [],
+      total: data.total || 0,
+      filters: data.filters || {
+        categories: ['all', 'silentbox', 'accessory'],
+        priceRange: { min: 0, max: 50000000 }
+      }
+    };
+  } catch (error) {
+    console.error('Error fetching products:', error);
+    return {
+      products: [],
+      total: 0,
+      filters: {
+        categories: ['all', 'silentbox', 'accessory'],
+        priceRange: { min: 0, max: 50000000 }
+      }
+    };
+  }
 }
 
 // Loading skeleton component
@@ -87,13 +159,13 @@ function ProductsError({ message }: { message: string }) {
   );
 }
 
-export default async function ProductsPage({
-  searchParams,
-}: {
-  searchParams: { [key: string]: string | string[] | undefined };
-}) {
+// صفحه اصلی محصولات (Server Component)
+export default async function ProductsPage({ searchParams }: ProductsPageProps) {
   try {
-    const { products, total, filters } = await getProducts(searchParams);
+    // حل کردن searchParams (برای Next.js 15)
+    const params = await searchParams;
+    
+    const { products, total, filters } = await getProducts(params);
 
     return (
       <div className="min-h-screen bg-gradient-to-b from-gray-900 to-gray-800">
@@ -123,6 +195,7 @@ export default async function ProductsPage({
       </div>
     );
   } catch (error) {
+    console.error('Error in ProductsPage:', error);
     return <ProductsError message="خطا در بارگذاری محصولات" />;
   }
 }

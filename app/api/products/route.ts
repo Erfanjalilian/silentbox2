@@ -7,116 +7,78 @@ import path from 'path';
 // مسیر فایل JSON برای ذخیره محصولات
 const productsFilePath = path.join(process.cwd(), 'products.json');
 
+// تایپ محصول
+interface Product {
+  id: string;
+  name: string;
+  price: number;
+  originalPrice: number;
+  discount: number;
+  discountPercent: number;
+  rating: number;
+  reviewCount: number;
+  salesCount: number;
+  description: string;
+  features: string[];
+  imageUrl: string;
+  images: string[];
+  category: string;
+  inStock: boolean;
+  isBestSeller: boolean;
+  badge: string | null;
+}
+
 // تابع برای خواندن محصولات از فایل JSON
-function getProducts(): any[] {
+function getProducts(): Product[] {
   try {
     if (!fs.existsSync(productsFilePath)) {
-      // اگر فایل وجود نداشت، داده‌های اولیه را بنویس
-      const initialProducts = [
+      // داده‌های اولیه با ساختار جدید
+      const initialProducts: Product[] = [
         {
-          id: '1',
-          name: 'SilentBox آپارتمانی',
-          price: 12500000,
-          originalPrice: 15800000,
-          discount: 21,
-          rating: 4.8,
-          reviewCount: 124,
-          description: 'جعبه صدای ضد صدا مخصوص ماینرهای آپارتمانی با عایق‌بندی پیشرفته و سیستم خنک‌کننده هوشمند',
-          features: [
-            'عایق‌بندی صدای ۹۵٪',
-            'سیستم خنک‌کننده اتوماتیک',
-            'قابلیت نصب ۲ دستگاه ماینر',
-            'ابعاد: ۸۰×۶۰×۷۰ سانتی‌متر'
-          ],
-          imageUrl: '',
-          category: 'silentbox',
-          inStock: true,
-          isBestSeller: true,
-          badge: 'پرفروش‌ترین'
-        },
-        {
-          id: '2',
-          name: 'SilentBox مخصوص ماینر M30',
-          price: 18900000,
-          originalPrice: 23500000,
-          discount: 20,
+          id: '7',
+          name: "سایلنت باکس برای ۳ عدد ماینر بدون کنترل از راه دور",
+          price: 18000000,
+          originalPrice: 20180000,
+          discount: 14,
+          discountPercent: 15,
           rating: 4.9,
-          reviewCount: 89,
-          description: 'جعبه صدای اختصاصی برای ماینرهای M30 با طراحی ارگونومیک و صدابرداری فوق‌العاده',
-          features: [
-            'مناسب برای ماینر M30',
-            'کاهش صدا تا ۹۸٪',
-            'سیستم تهویه پیشرفته',
-            'نصب آسان و سریع'
+          reviewCount: 0,
+          salesCount: 71,
+          description: "این مدل طراحی شده برای سه عدد ماینر معمولی یا دو عدد ماینر هوشمند S19 ....",
+          features: [],
+          imageUrl: "/uploads/products/1778316834341-uxch29.jpg",
+          images: [
+            "/uploads/products/1778316834341-uxch29.jpg",
+            "/uploads/products/placeholder-1.jpg",
+            "/uploads/products/placeholder-2.jpg"
           ],
-          imageUrl: '',
-          category: 'silentbox',
-          inStock: true,
-          isBestSeller: true,
-          badge: 'پرفروش‌ترین'
-        },
-        {
-          id: '3',
-          name: 'شیر قطع کن هوا',
-          price: 2850000,
-          originalPrice: 3500000,
-          discount: 18,
-          rating: 4.6,
-          reviewCount: 56,
-          description: 'شیر قطع کن هوا با کیفیت بالا برای سیستم‌های تهویه ماینرها، ساخت آلمان',
-          features: [
-            'جنس باکیفیت و ضد زنگ',
-            'اتصال آسان',
-            'طول عمر بالا',
-            'ساخت آلمان'
-          ],
-          imageUrl: '',
-          category: 'accessory',
+          category: "silentbox",
           inStock: true,
           isBestSeller: true,
           badge: null
         },
         {
-          id: '4',
-          name: 'فن حلزونی (سانتریفیوژ)',
-          price: 4250000,
-          originalPrice: 5500000,
-          discount: 22,
-          rating: 4.7,
-          reviewCount: 78,
-          description: 'فن سانتریفیوژ قدرتمند برای خنک‌سازی بهینه ماینرها با مصرف انرژی پایین',
-          features: [
-            'سرعت قابل تنظیم',
-            'مصرف انرژی ۴۵ وات',
-            'جریان هوای ۲۵۰ CFM',
-            'صدای بسیار کم'
+          id: '19',
+          name: "سایلنت باکس برای ماینر های معمولی تا حرفه ای بدون کنترل از راه دور",
+          price: 12000000,
+          originalPrice: 15000000,
+          discount: 14,
+          discountPercent: 14,
+          rating: 0,
+          reviewCount: 0,
+          salesCount: 0,
+          description: "این مدل سایلنت باکس طراحی شده برای تمامی ماینرهای معمولی...",
+          features: [],
+          imageUrl: "/uploads/products/1779282082465-cu0sq6.webp",
+          images: [
+            "/uploads/products/1779282082465-cu0sq6.webp",
+            "/uploads/products/placeholder-1.jpg",
+            "/uploads/products/placeholder-2.jpg"
           ],
-          imageUrl: '',
-          category: 'accessory',
+          category: "silentbox",
           inStock: true,
           isBestSeller: true,
-          badge: 'ویژه'
-        },
-        {
-          id: '5',
-          name: 'SilentBox صنعتی',
-          price: 26500000,
-          originalPrice: 32000000,
-          discount: 17,
-          rating: 4.9,
-          reviewCount: 45,
-          description: 'جعبه صدای صنعتی مناسب برای مزارع استخراج با ظرفیت ۴ دستگاه ماینر',
-          features: [
-            'ظرفیت ۴ ماینر',
-            'سیستم خنک‌سازی حرفه‌ای',
-            'عایق ۹۹٪ صدا',
-            'قابلیت اتصال به داکت مرکزی'
-          ],
-          imageUrl: '',
-          category: 'silentbox',
-          inStock: false,
-          isBestSeller: true,
-          badge: null
+          badge: "پرفروش ترین"
         }
       ];
       fs.writeFileSync(productsFilePath, JSON.stringify(initialProducts, null, 2));
@@ -124,7 +86,15 @@ function getProducts(): any[] {
     }
     
     const data = fs.readFileSync(productsFilePath, 'utf8');
-    return JSON.parse(data);
+    const products = JSON.parse(data);
+    
+    // اطمینان از وجود فیلدهای جدید در محصولات قدیمی
+    return products.map((p: any) => ({
+      ...p,
+      discountPercent: p.discountPercent || p.discount || 0,
+      salesCount: p.salesCount || 0,
+      images: p.images || (p.imageUrl ? [p.imageUrl] : [])
+    }));
   } catch (error) {
     console.error('Error reading products file:', error);
     return [];
@@ -132,7 +102,7 @@ function getProducts(): any[] {
 }
 
 // تابع برای نوشتن محصولات در فایل JSON
-function saveProducts(products: any[]) {
+function saveProducts(products: Product[]) {
   try {
     fs.writeFileSync(productsFilePath, JSON.stringify(products, null, 2));
   } catch (error) {
@@ -192,10 +162,13 @@ export async function GET(request: NextRequest) {
           filteredProducts.sort((a, b) => b.price - a.price);
           break;
         case 'discount_desc':
-          filteredProducts.sort((a, b) => b.discount - a.discount);
+          filteredProducts.sort((a, b) => (b.discountPercent || b.discount) - (a.discountPercent || a.discount));
           break;
         case 'rating_desc':
           filteredProducts.sort((a, b) => b.rating - a.rating);
+          break;
+        case 'sales_desc':
+          filteredProducts.sort((a, b) => b.salesCount - a.salesCount);
           break;
         case 'newest':
           filteredProducts.sort((a, b) => parseInt(b.id) - parseInt(a.id));
@@ -220,6 +193,7 @@ export async function GET(request: NextRequest) {
       },
     });
   } catch (error) {
+    console.error('Error in GET:', error);
     return NextResponse.json(
       { error: 'Failed to fetch products' },
       { status: 500 }
@@ -239,17 +213,20 @@ export async function POST(request: NextRequest) {
       : 0;
     const newId = (maxId + 1).toString();
     
-    const newProduct = {
+    const newProduct: Product = {
       id: newId,
       name: body.name,
       price: body.price,
-      originalPrice: body.originalPrice,
+      originalPrice: body.originalPrice || body.price,
       discount: body.discount || 0,
+      discountPercent: body.discountPercent || body.discount || 0,
       rating: 0,
       reviewCount: 0,
+      salesCount: 0,
       description: body.description || '',
       features: body.features || [],
-      imageUrl: body.imageUrl || '',
+      imageUrl: body.imageUrl || (body.images?.[0] || ''),
+      images: body.images || (body.imageUrl ? [body.imageUrl] : []),
       category: body.category || 'silentbox',
       inStock: body.inStock ?? true,
       isBestSeller: body.isBestSeller ?? false,
@@ -267,6 +244,54 @@ export async function POST(request: NextRequest) {
     console.error('Error in POST:', error);
     return NextResponse.json(
       { error: 'خطا در ایجاد محصول' },
+      { status: 500 }
+    );
+  }
+}
+
+// ✅ PUT - ویرایش محصول
+export async function PUT(request: NextRequest) {
+  try {
+    const body = await request.json();
+    const { id, ...updateData } = body;
+    
+    if (!id) {
+      return NextResponse.json(
+        { error: 'Product ID is required' },
+        { status: 400 }
+      );
+    }
+    
+    let productsData = getProducts();
+    const productIndex = productsData.findIndex(p => p.id === id);
+    
+    if (productIndex === -1) {
+      return NextResponse.json(
+        { error: 'Product not found' },
+        { status: 404 }
+      );
+    }
+    
+    // به‌روزرسانی محصول
+    productsData[productIndex] = {
+      ...productsData[productIndex],
+      ...updateData,
+      id: id, // حفظ ID اصلی
+      // اطمینان از وجود فیلدهای ضروری
+      images: updateData.images || (updateData.imageUrl ? [updateData.imageUrl] : productsData[productIndex].images),
+      imageUrl: updateData.imageUrl || productsData[productIndex].imageUrl,
+    };
+    
+    saveProducts(productsData);
+    
+    return NextResponse.json(
+      { message: 'محصول با موفقیت ویرایش شد', product: productsData[productIndex] },
+      { status: 200 }
+    );
+  } catch (error) {
+    console.error('Error in PUT:', error);
+    return NextResponse.json(
+      { error: 'خطا در ویرایش محصول' },
       { status: 500 }
     );
   }
@@ -306,6 +331,28 @@ export async function DELETE(request: NextRequest) {
     console.error('Error in DELETE:', error);
     return NextResponse.json(
       { error: 'Failed to delete product' },
+      { status: 500 }
+    );
+  }
+}
+
+// ✅ GET by ID - گرفتن یک محصول خاص
+export async function GET_PRODUCT_BY_ID(request: NextRequest, { params }: { params: { id: string } }) {
+  try {
+    const productsData = getProducts();
+    const product = productsData.find(p => p.id === params.id);
+    
+    if (!product) {
+      return NextResponse.json(
+        { error: 'Product not found' },
+        { status: 404 }
+      );
+    }
+    
+    return NextResponse.json(product, { status: 200 });
+  } catch (error) {
+    return NextResponse.json(
+      { error: 'Failed to fetch product' },
       { status: 500 }
     );
   }

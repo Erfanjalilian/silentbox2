@@ -1,22 +1,27 @@
 // app/components/ProductCard.tsx
 'use client';
 
-import React from 'react';
+import React, { useState } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
-import { PhotoIcon, StarIcon, ShoppingCartIcon } from '@heroicons/react/24/outline';
+import { PhotoIcon, StarIcon, ShoppingCartIcon, HeartIcon } from '@heroicons/react/24/outline';
 import { StarIcon as StarSolidIcon } from '@heroicons/react/24/solid';
 
+// تایپ کامل محصول با فیلدهای جدید
 interface Product {
   id: string;
   name: string;
   price: number | null;
   originalPrice: number;
   discount: number;
+  discountPercent?: number; // اضافه شد
   rating: number;
   reviewCount: number;
+  salesCount?: number; // اضافه شد
   description: string;
+  features?: string[]; // اضافه شد
   imageUrl: string;
+  images?: string[]; // اضافه شد
   category: string;
   inStock: boolean;
   isBestSeller: boolean;
@@ -28,11 +33,37 @@ interface ProductCardProps {
 }
 
 const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
-  const hasImage = product.imageUrl && product.imageUrl.trim() !== '';
+  const [currentImageIndex, setCurrentImageIndex] = useState(0);
   
-  const discountPercentage = product.discount && !isNaN(product.discount) && product.discount > 0 
-    ? product.discount 
-    : 0;
+  // گرفتن عکس اصلی یا اولین عکس از آرایه images
+  const getMainImage = (): string => {
+    if (product.images && product.images.length > 0) {
+      return product.images[0];
+    }
+    return product.imageUrl || '';
+  };
+  
+  // گرفتن همه عکس‌ها
+  const getAllImages = (): string[] => {
+    if (product.images && product.images.length > 0) {
+      return product.images;
+    }
+    return product.imageUrl ? [product.imageUrl] : [];
+  };
+  
+  const hasMultipleImages = (): boolean => {
+    return getAllImages().length > 1;
+  };
+  
+  const hasImage = getMainImage() !== '';
+  
+  // گرفتن درصد تخفیف (از discountPercent یا discount)
+  const getDiscountPercentage = (): number => {
+    const discount = product.discountPercent || product.discount || 0;
+    return discount > 0 ? discount : 0;
+  };
+  
+  const discountPercentage = getDiscountPercentage();
 
   const renderStars = () => {
     let rating = product.rating;
@@ -58,24 +89,24 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
         {[...Array(emptyStars)].map((_, i) => (
           <StarIcon key={`empty-${i}`} className="h-3 md:h-4 w-3 md:w-4 text-gray-600" />
         ))}
-        {/* reviewCount حذف شد - نمایش تعداد نظرات وجود ندارد */}
       </div>
     );
   };
 
   const formatPrice = (price: number | null | undefined): string => {
-    if (price === null || price === undefined || isNaN(price)) {
+    if (price === null || price === undefined || isNaN(price) || price === 0) {
       return 'تماس بگیرید';
     }
     return price.toLocaleString('fa-IR') + ' تومان';
   };
 
-  const hasDiscount = () => {
+  const hasDiscount = (): boolean => {
     const price = product.price;
     const originalPrice = product.originalPrice;
     
     if (price === null || price === undefined || isNaN(price)) return false;
     if (originalPrice === null || originalPrice === undefined || isNaN(originalPrice)) return false;
+    if (originalPrice === 0) return false;
     
     return originalPrice > price;
   };
@@ -98,10 +129,25 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
   const validOriginalPrice = getValidOriginalPrice();
   const showDiscount = hasDiscount();
 
+  // تابع برای تغییر عکس با hover (در دسکتاپ)
+  const handleMouseEnter = () => {
+    if (hasMultipleImages()) {
+      setCurrentImageIndex(1 % getAllImages().length);
+    }
+  };
+  
+  const handleMouseLeave = () => {
+    setCurrentImageIndex(0);
+  };
+  
+  const currentImage = hasMultipleImages() && currentImageIndex > 0 
+    ? getAllImages()[currentImageIndex] 
+    : getMainImage();
+
   return (
     <div className="bg-gray-800 rounded-xl overflow-hidden border border-gray-700 hover:border-sky-500/50 transition-all duration-300 hover:shadow-lg hover:shadow-sky-500/10 group h-full flex flex-col relative">
       
-      {/* Badges - مشترک برای موبایل و دسکتاپ */}
+      {/* Badges */}
       {product.badge && product.badge.trim() !== '' && (
         <div className="absolute top-3 right-3 z-10">
           <span className="bg-orange-500 text-white text-xs font-bold px-2 py-1 rounded-full">
@@ -110,10 +156,18 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
         </div>
       )}
 
+      {product.isBestSeller && !product.badge && (
+        <div className="absolute top-3 right-3 z-10">
+          <span className="bg-yellow-500 text-white text-xs font-bold px-2 py-1 rounded-full">
+            پرفروش
+          </span>
+        </div>
+      )}
+
       {discountPercentage > 0 && (
         <div className="absolute top-3 left-3 z-10">
           <span className="bg-green-500 text-white text-xs font-bold px-2 py-1 rounded-full">
-            {discountPercentage}٪
+            {discountPercentage}٪ تخفیف
           </span>
         </div>
       )}
@@ -127,7 +181,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
             <div className="relative h-full min-h-[160px] bg-gradient-to-br from-gray-700 to-gray-800">
               {hasImage ? (
                 <Image
-                  src={product.imageUrl}
+                  src={currentImage}
                   alt={product.name || 'محصول'}
                   fill
                   className="object-cover"
@@ -170,8 +224,11 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
               </h3>
             </Link>
 
-            <div className="mb-1">
+            <div className="mb-1 flex items-center gap-2 flex-wrap">
               {renderStars()}
+              {product.reviewCount > 0 && (
+                <span className="text-gray-500 text-xs">({product.reviewCount})</span>
+              )}
             </div>
 
             <div className="mb-1">
@@ -191,6 +248,15 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
               )}
             </div>
 
+            {/* نمایش تعداد فروش (اختیاری) */}
+            {product.salesCount && product.salesCount > 0 && (
+              <div className="mb-1">
+                <span className="text-gray-500 text-xs">
+                  {product.salesCount.toLocaleString('fa-IR')} فروش
+                </span>
+              </div>
+            )}
+
             <div className="mb-2">
               {product.inStock ? (
                 <span className="text-green-500 text-xs flex items-center gap-1">
@@ -205,7 +271,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
               )}
             </div>
 
-            {/* دکمه افزودن به سبد - تغییر به Link برای رفتن به صفحه جزئیات */}
+            {/* دکمه افزودن به سبد */}
             <Link 
               href={`/products/${product.id}`}
               className={`w-full py-1.5 rounded-lg font-semibold text-xs transition-all duration-300 flex items-center justify-center gap-1 ${
@@ -223,33 +289,46 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
 
       {/* ========== دسکتاپ: Layout عمودی ========== */}
       <div className="hidden md:block">
-        {/* Product Image */}
-        <Link href={`/products/${product.id}`} className="block">
+        {/* Product Image with hover effect for multiple images */}
+        <Link 
+          href={`/products/${product.id}`} 
+          className="block"
+          onMouseEnter={handleMouseEnter}
+          onMouseLeave={handleMouseLeave}
+        >
           <div className="relative h-48 w-full overflow-hidden bg-gradient-to-br from-gray-700 to-gray-800">
             {hasImage ? (
-              <Image
-                src={product.imageUrl}
-                alt={product.name || 'محصول'}
-                fill
-                className="object-cover group-hover:scale-110 transition-transform duration-300"
-                sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 25vw"
-                onError={(e) => {
-                  const target = e.target as HTMLImageElement;
-                  target.style.display = 'none';
-                  const parent = target.parentElement;
-                  if (parent) {
-                    const fallback = document.createElement('div');
-                    fallback.className = 'flex flex-col items-center justify-center h-full';
-                    fallback.innerHTML = `
-                      <svg class="h-12 w-12 text-sky-500/30 mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                      </svg>
-                      <p class="text-gray-500 text-xs">تصویر محصول</p>
-                    `;
-                    parent.appendChild(fallback);
-                  }
-                }}
-              />
+              <>
+                <Image
+                  src={currentImage}
+                  alt={product.name || 'محصول'}
+                  fill
+                  className="object-cover transition-transform duration-500 group-hover:scale-110"
+                  sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 25vw"
+                  onError={(e) => {
+                    const target = e.target as HTMLImageElement;
+                    target.style.display = 'none';
+                    const parent = target.parentElement;
+                    if (parent) {
+                      const fallback = document.createElement('div');
+                      fallback.className = 'flex flex-col items-center justify-center h-full';
+                      fallback.innerHTML = `
+                        <svg class="h-12 w-12 text-sky-500/30 mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                        </svg>
+                        <p class="text-gray-500 text-xs">تصویر محصول</p>
+                      `;
+                      parent.appendChild(fallback);
+                    }
+                  }}
+                />
+                {/* نشانگر چند عکس */}
+                {hasMultipleImages() && (
+                  <div className="absolute bottom-2 right-2 bg-black/50 text-white text-xs px-1.5 py-0.5 rounded-full">
+                    {currentImageIndex + 1}/{getAllImages().length}
+                  </div>
+                )}
+              </>
             ) : (
               <div className="flex flex-col items-center justify-center h-full">
                 <PhotoIcon className="h-12 w-12 text-sky-500/30 mb-2" />
@@ -271,8 +350,11 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
             </h3>
           </Link>
 
-          <div className="mb-2">
+          <div className="mb-2 flex items-center gap-2 flex-wrap">
             {renderStars()}
+            {product.reviewCount > 0 && (
+              <span className="text-gray-500 text-xs">({product.reviewCount} نظر)</span>
+            )}
           </div>
 
           <div className="mb-3">
@@ -292,6 +374,15 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
             )}
           </div>
 
+          {/* نمایش تعداد فروش */}
+          {product.salesCount && product.salesCount > 0 && (
+            <div className="mb-2">
+              <span className="text-gray-500 text-xs">
+                🏆 {product.salesCount.toLocaleString('fa-IR')} فروش
+              </span>
+            </div>
+          )}
+
           <div className="mb-3">
             {product.inStock ? (
               <span className="text-green-500 text-xs flex items-center gap-1">
@@ -306,7 +397,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
             )}
           </div>
 
-          {/* دکمه افزودن به سبد - تغییر به Link برای رفتن به صفحه جزئیات */}
+          {/* دکمه مشاهده محصول */}
           <Link
             href={`/products/${product.id}`}
             className={`w-full py-2 rounded-lg font-semibold text-sm transition-all duration-300 flex items-center justify-center gap-2 ${
