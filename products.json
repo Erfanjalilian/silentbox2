@@ -14,8 +14,7 @@
     "imageUrl": "/uploads/products/1778316834341-uxch29.jpg",
     "images": [
       "/uploads/products/1778316834341-uxch29.jpg",
-      "/uploads/products/183.jpg",
-      "/uploads/products/184.jpg",
+    
       "/uploads/products/185.jpg",
       "/uploads/products/186.jpg",
       "/uploads/products/187.jpg",
@@ -168,10 +167,30 @@
     "features": [],
     "imageUrl": "/uploads/products/1779191351556-mevhtq.jpg",
     "images": [
-      "/uploads/products/1779191351556-mevhtq.jpg",
+      "/uploads/products/عکس ۱۱ شماره ی ۴.jpg",
       "/uploads/products/عکس ۱۱شماره ی ۲.jpg",
-      "/uploads/products/عکس ۱۱ شماره ی ۳.jpg",
-      "/uploads/products/عکس ۱۱ شماره ی ۴.jpg"
+      "/uploads/products/عکس ۱۱ شماره ی ۳.jpg"
+      
+    ],
+    "category": "silentbox",
+    "inStock": true,
+    "isBestSeller": false,
+    "badge": null
+  },
+   {
+    "id": "18",
+    "name": "این مدل سایلنت باکس برای دستگاه‌های سری m هست . Whatsminer ",
+    "price": 11000000,
+    "originalPrice": 0,
+    "discount": 0,
+    "rating": 0,
+    "reviewCount": 0,
+    "description": " جنس دستگاه ما vpc هست زد حریق و زد رطوبت.  دو عدد فن حلزونی اورجینال موتور ژن یا یولترا ژن که حک شد روی بدنه و دائم کار هست و از همه مهمتر بلبرینگی هست که کاملا بی صدا با ۶ ماه گارانتی . مجهز به قطع کن بادی هوشمند.   پریزها و دوشاخه صنعتی و سرامیکی  که داغ نکنه و خدای ناکرده آتیش نگیره . و از همه مهمتر ما بجای رله ۲۰ آمپر از کنتاکتور ۶۰ آمپر استفاده می کنیم که هیچ وقت پلاتینهاش ذوب نشه . و سیم کشی داخلی نمره ۲.۵و۴ که ۴۵ آمپر ظرفیتش به همراه آمپر سنج و ولت متر و کلید خاموش و روشن کردن ماینر و هم فن که چهار دور هست .",
+    "features": [],
+    "imageUrl": "/uploads/products/1779191559462-ihg9pu.jpg",
+    "images":[
+      "/uploads/products/1779191559462-ihg9pu.jpg",
+      "/uploads/products/1779191351556-mevhtq.jpg"
     ],
     "category": "silentbox",
     "inStock": true,
