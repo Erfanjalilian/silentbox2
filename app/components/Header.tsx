@@ -4,11 +4,18 @@
 import React, { useState } from 'react';
 import Link from 'next/link';
 import { UserIcon, Bars3Icon, XMarkIcon } from '@heroicons/react/24/outline';
+import { useCart } from '@/contexts/CartContext';
 import { useAuth } from '@/contexts/AuthContext';
 
 const Header: React.FC = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  // useCart() may have different shape depending on context type definitions.
+  // Coerce to any to safely access possible cart or items properties.
+  const cartContext = useCart();
+  const cart = (cartContext as any)?.cart ?? (cartContext as any)?.items ?? [];
   const { user, isAuthenticated, isLoading } = useAuth();
+  
+  const cartCount = cart?.length || 0;
 
   const toggleMobileMenu = () => {
     setIsMobileMenuOpen(!isMobileMenuOpen);
@@ -52,21 +59,19 @@ const Header: React.FC = () => {
               <Link href="/about" className="text-gray-300 hover:text-sky-400 transition-colors duration-200 font-medium">
                 درباره ما
               </Link>
+              <Link href="/videos" className="text-gray-300 hover:text-sky-400 transition-colors duration-200 font-medium">
+                تست صدا
+              </Link>
             </nav>
 
-            {/* Right side icons: Cart, User, Menu (mobile) */}
+            {/* Right side icons: Payment Button, User, Menu (mobile) */}
             <div className="flex items-center gap-3 sm:gap-5">
-              <Link href="/payment">
-              {/* Payment method button */}
-              <button
-                type="button"
-                onClick={() => {
-                  // placeholder action for payment method
-                }}
-                className="rounded-full bg-sky-500/10 px-4 py-2 text-sm font-semibold text-sky-100 hover:bg-sky-500/20 transition-colors duration-200"
+              {/* Payment Button - replaces cart icon */}
+              <Link 
+                href="/payment" 
+                className="relative bg-sky-500 hover:bg-sky-600 text-white px-4 py-2 rounded-lg text-sm font-medium transition-all duration-300 hover:scale-105"
               >
                 شیوه ی پرداخت
-              </button>
               </Link>
 
               {isAuthenticated && user?.role === 'admin' && (
@@ -162,14 +167,21 @@ const Header: React.FC = () => {
               >
                 درباره ما
               </Link>
+              <Link 
+                href="/videos" 
+                onClick={toggleMobileMenu}
+                className="text-gray-300 hover:text-sky-400 transition-colors duration-200 font-medium text-lg"
+              >
+                تست صدا
+              </Link>
               
-              {/* Payment link in mobile menu (cart removed) */}
+              {/* Payment link in mobile menu */}
               <Link 
                 href="/payment" 
                 onClick={toggleMobileMenu}
                 className="flex items-center justify-between text-gray-300 hover:text-sky-400 transition-colors duration-200 font-medium text-lg"
               >
-                <span>پرداخت</span>
+                <span>شیوه ی پرداخت</span>
               </Link>
               
               <div className="pt-6 border-t border-sky-500/30 space-y-4">
