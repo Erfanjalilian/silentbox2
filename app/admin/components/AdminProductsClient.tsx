@@ -2,9 +2,9 @@
 'use client';
 
 import React, { useState } from 'react';
-import Image from 'next/image';
+
 import Link from 'next/link';
-import { TrashIcon, EyeIcon } from '@heroicons/react/24/outline';
+import { TrashIcon, EyeIcon, PencilSquareIcon } from '@heroicons/react/24/outline';
 
 interface Product {
   id: string;
@@ -125,6 +125,7 @@ const AdminProductsClient: React.FC<AdminProductsClientProps> = ({ initialProduc
                   </td>
                   <td className="p-4">
                     <div className="flex gap-2">
+                    
                       <button
                         onClick={() => {
                           setSelectedProduct(product);

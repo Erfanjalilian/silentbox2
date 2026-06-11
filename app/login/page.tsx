@@ -1,35 +1,24 @@
 "use client";
 
-import React, { useState, useEffect, Suspense } from "react";
+import React, { useState, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { Button } from "@/app/components/ui/Button";
 import { TextField } from "@/app/components/ui/TextField";
 
-// This inner component uses useSearchParams and must be wrapped in Suspense
 function LoginFormContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const [password, setPassword] = useState("");
-  const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-
-  // Clear the redirect parameter from URL on component mount
-  useEffect(() => {
-    if (searchParams.get("redirect")) {
-      // Replace current URL without the redirect parameter
-      const newUrl = window.location.pathname;
-      window.history.replaceState({}, "", newUrl);
-    }
-  }, [searchParams]);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     setError(null);
-    
+
     if (password === "1383") {
-      setLoading(true);
-      // Navigate directly to admin products page
-      router.push("/admin/products");
+      // دریافت redirect از URL یا استفاده از مسیر پیش‌فرض
+      const redirectTo = searchParams.get("redirect") || "/admin/products";
+      router.push(redirectTo);
     } else {
       setError("رمز عبور اشتباه است");
       setPassword("");
@@ -38,7 +27,6 @@ function LoginFormContent() {
 
   return (
     <div className="w-full max-w-md space-y-8 rounded-2xl border border-gray-700/80 bg-gray-900/60 p-8 shadow-2xl backdrop-blur">
-      {/* Header */}
       <div className="space-y-3 text-center">
         <h1 className="text-3xl font-bold text-gray-50">ورود به پنل مدیریت</h1>
         <p className="text-sm text-gray-400">
@@ -46,7 +34,6 @@ function LoginFormContent() {
         </p>
       </div>
 
-      {/* Error Alert */}
       {error && (
         <div
           className="rounded-lg border border-red-500/40 bg-red-950/40 px-4 py-3 text-sm text-red-200"
@@ -56,7 +43,6 @@ function LoginFormContent() {
         </div>
       )}
 
-      {/* Password Input Form */}
       <form onSubmit={handleSubmit} className="space-y-5">
         <TextField
           label="رمز عبور"
@@ -66,21 +52,18 @@ function LoginFormContent() {
           value={password}
           onChange={(e) => setPassword(e.target.value)}
           autoComplete="current-password"
-          disabled={loading}
         />
 
         <Button
           type="submit"
           variant="primary"
           className="w-full py-3 text-base font-semibold"
-          isLoading={loading}
-          disabled={!password.trim() || loading}
+          disabled={!password.trim()}
         >
           ورود به پنل مدیریت
         </Button>
       </form>
 
-      {/* Back to home link */}
       <div className="text-center pt-4">
         <button
           type="button"
@@ -94,7 +77,6 @@ function LoginFormContent() {
   );
 }
 
-// Loading fallback component for Suspense
 function LoginFormFallback() {
   return (
     <div className="w-full max-w-md animate-pulse rounded-2xl border border-gray-700/80 bg-gray-900/60 p-8 shadow-2xl backdrop-blur">

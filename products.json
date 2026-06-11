@@ -14,7 +14,6 @@
     "imageUrl": "/uploads/products/1778316834341-uxch29.jpg",
     "images": [
       "/uploads/products/1778316834341-uxch29.jpg",
-    
       "/uploads/products/185.jpg",
       "/uploads/products/186.jpg",
       "/uploads/products/187.jpg",
@@ -41,7 +40,6 @@
     "imageUrl": "/uploads/products/1778316969650-8vcb60.jpg",
     "images": [
       "/uploads/products/1778316969650-8vcb60.jpg"
-      
     ],
     "category": "silentbox",
     "inStock": true,
@@ -170,14 +168,13 @@
       "/uploads/products/عکس ۱۱ شماره ی ۴.jpg",
       "/uploads/products/عکس ۱۱شماره ی ۲.jpg",
       "/uploads/products/عکس ۱۱ شماره ی ۳.jpg"
-      
     ],
     "category": "silentbox",
     "inStock": true,
     "isBestSeller": false,
     "badge": null
   },
-   {
+  {
     "id": "18",
     "name": "این مدل سایلنت باکس برای دستگاه‌های سری m هست . Whatsminer ",
     "price": 11000000,
@@ -188,7 +185,7 @@
     "description": " جنس دستگاه ما vpc هست زد حریق و زد رطوبت.  دو عدد فن حلزونی اورجینال موتور ژن یا یولترا ژن که حک شد روی بدنه و دائم کار هست و از همه مهمتر بلبرینگی هست که کاملا بی صدا با ۶ ماه گارانتی . مجهز به قطع کن بادی هوشمند.   پریزها و دوشاخه صنعتی و سرامیکی  که داغ نکنه و خدای ناکرده آتیش نگیره . و از همه مهمتر ما بجای رله ۲۰ آمپر از کنتاکتور ۶۰ آمپر استفاده می کنیم که هیچ وقت پلاتینهاش ذوب نشه . و سیم کشی داخلی نمره ۲.۵و۴ که ۴۵ آمپر ظرفیتش به همراه آمپر سنج و ولت متر و کلید خاموش و روشن کردن ماینر و هم فن که چهار دور هست .",
     "features": [],
     "imageUrl": "/uploads/products/1779191559462-ihg9pu.jpg",
-    "images":[
+    "images": [
       "/uploads/products/11 2 a.jpg",
       "/uploads/products/11 3 a.jpg",
       "/uploads/products/11 4 a.jpg",
@@ -197,7 +194,9 @@
     "category": "silentbox",
     "inStock": true,
     "isBestSeller": false,
-    "badge": null
+    "badge": null,
+    "discountPercent": 0,
+    "salesCount": 0
   },
   {
     "id": "19",
@@ -239,7 +238,6 @@
     "images": [
       "/uploads/products/1779282496230-su7qot.webp",
       "/uploads/products/عکس ۱۵ دوم.jpg"
-      
     ],
     "category": "silentbox",
     "inStock": true,
@@ -263,7 +261,7 @@
       "/uploads/products/1779282674973-fu3scg.webp",
       "/uploads/products/عکس ۱۱.۵ شماره ی ۲.jpg",
       "/uploads/products/عکس ۱۱.۵ شماره ی ۳.jpg",
-       "/uploads/products/عکس شماره ی ۱۱.۵ شماره ی ۴.jpg"
+      "/uploads/products/عکس شماره ی ۱۱.۵ شماره ی ۴.jpg"
     ],
     "category": "silentbox",
     "inStock": true,

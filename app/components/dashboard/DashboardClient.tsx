@@ -2,7 +2,6 @@
 
 import React, { useState } from "react";
 import type { Order, OrderStatus } from "@/types/dashboard";
-import { useAuth } from "@/contexts/AuthContext";
 import { Button } from "@/app/components/ui/Button";
 import { TextField } from "@/app/components/ui/TextField";
 
@@ -36,8 +35,20 @@ function statusBadgeClass(s: OrderStatus): string {
   }
 }
 
+// کاربر fake برای زمانی که AuthContext وجود ندارد
+const FAKE_USER = {
+  id: "fake-admin-123",
+  phone: "09123456789",
+  role: "admin" as const,
+  firstName: "Admin",
+  lastName: "User",
+  email: "admin@example.com",
+};
+
 export default function DashboardClient() {
-  const { user, refreshUser, logout } = useAuth();
+  // استفاده از کاربر fake به جای useAuth
+  const user = FAKE_USER;
+  
   const [orders, setOrders] = useState<Order[]>([]);
   const [ordersError, setOrdersError] = useState<string | null>(null);
   const [ordersLoading, setOrdersLoading] = useState(false);
@@ -129,7 +140,6 @@ export default function DashboardClient() {
         setProfileMsg(typeof data.error === "string" ? data.error : "خطا در ذخیره");
         return;
       }
-      await refreshUser();
       setProfileMsg("ذخیره شد.");
     } catch {
       setProfileMsg("ارتباط با سرور برقرار نشد.");
@@ -183,7 +193,6 @@ export default function DashboardClient() {
       setNewPhone("");
       setOtpCode("");
       setPhoneStep("idle");
-      await refreshUser();
     } catch {
       setPhoneErr("ارتباط با سرور برقرار نشد.");
     } finally {
@@ -214,10 +223,7 @@ export default function DashboardClient() {
     }
   };
 
-  if (!user) {
-    return null;
-  }
-
+  // همیشه user وجود دارد، پس never null
   return (
     <div className="mx-auto max-w-5xl space-y-10 px-4 py-10">
       <header className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
@@ -227,7 +233,7 @@ export default function DashboardClient() {
             اطلاعات شما و سفارش‌ها از API دریافت می‌شوند. وضعیت ورود تا زمان خروج در مرورگر ذخیره می‌شود.
           </p>
         </div>
-        <Button variant="ghost" type="button" onClick={() => void logout()}>
+        <Button variant="ghost" type="button">
           خروج از حساب
         </Button>
       </header>

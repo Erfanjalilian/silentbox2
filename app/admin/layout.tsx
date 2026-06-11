@@ -4,52 +4,15 @@ import React from 'react';
 /** Admin panel uses live data; never statically prerender at build time. */
 export const dynamic = 'force-dynamic';
 import Link from 'next/link';
-import { 
-  ShoppingBagIcon, 
-  NewspaperIcon, 
-  UsersIcon, 
-  ShoppingCartIcon,
-  EnvelopeIcon,
-  InformationCircleIcon,
-  HomeIcon
-} from '@heroicons/react/24/outline';
+import { ShoppingBagIcon, HomeIcon } from '@heroicons/react/24/outline';
+import AdminLogoutButton from '@/app/admin/components/AdminLogoutButton';
 
 const menuItems = [
-  { 
-    name: 'مدیریت محصولات', 
-    href: '/admin/products', 
+  {
+    name: 'مدیریت محصولات',
+    href: '/admin/products',
     icon: ShoppingBagIcon,
-    description: 'افزودن، ویرایش و حذف محصولات'
-  },
-  { 
-    name: 'مدیریت مقالات', 
-    href: '/admin/articles', 
-    icon: NewspaperIcon,
-    description: 'افزودن، ویرایش و حذف مقالات'
-  },
-  { 
-    name: 'مدیریت کاربران', 
-    href: '/admin/users', 
-    icon: UsersIcon,
-    description: 'مدیریت کاربران و دسترسی‌ها'
-  },
-  { 
-    name: 'مدیریت سفارشات', 
-    href: '/admin/orders', 
-    icon: ShoppingCartIcon,
-    description: 'مشاهده و مدیریت سفارشات'
-  },
-  { 
-    name: 'تماس با ما', 
-    href: '/admin/contact', 
-    icon: EnvelopeIcon,
-    description: 'مدیریت پیام‌های تماس'
-  },
-  { 
-    name: 'درباره ما', 
-    href: '/admin/about', 
-    icon: InformationCircleIcon,
-    description: 'ویرایش اطلاعات صفحه درباره ما'
+    description: 'افزودن، ویرایش و حذف محصولات',
   },
 ];
 
@@ -66,11 +29,11 @@ export default function AdminLayout({
           <div className="p-6">
             {/* Logo */}
             <div className="mb-8 pb-6 border-b border-gray-700">
-              <Link href="/admin" className="text-2xl font-bold">
+              <Link href="/admin/products" className="text-2xl font-bold">
                 <span className="text-gray-100">پنل</span>
                 <span className="text-sky-400">مدیریت</span>
               </Link>
-              <p className="text-gray-500 text-sm mt-2">مدیریت فروشگاه سیلنت‌باکس</p>
+              <p className="text-gray-500 text-sm mt-2">مدیریت محصولات فروشگاه</p>
             </div>
 
             {/* Navigation */}
@@ -96,14 +59,15 @@ export default function AdminLayout({
             </nav>
 
             {/* Footer */}
-            <div className="mt-8 pt-6 border-t border-gray-700">
+            <div className="mt-8 pt-6 border-t border-gray-700 space-y-3">
               <Link
                 href="/"
-                className="flex items-center gap-3 text-gray-400 hover:text-sky-400 transition-colors"
+                className="flex items-center gap-3 text-gray-400 hover:text-sky-400 transition-colors p-3 rounded-lg hover:bg-gray-700/50"
               >
                 <HomeIcon className="h-5 w-5" />
                 <span>بازگشت به سایت</span>
               </Link>
+              <AdminLogoutButton />
             </div>
           </div>
         </aside>
@@ -111,15 +75,19 @@ export default function AdminLayout({
         {/* Mobile Header */}
         <div className="lg:hidden fixed top-0 right-0 left-0 bg-gray-800 border-b border-gray-700 z-50">
           <div className="flex items-center justify-between p-4">
-            <Link href="/admin" className="text-xl font-bold">
+            <Link href="/admin/products" className="text-xl font-bold">
               <span className="text-gray-100">پنل</span>
               <span className="text-sky-400">مدیریت</span>
             </Link>
-            <button className="text-gray-400 hover:text-sky-400">
-              <svg className="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
-              </svg>
-            </button>
+            <div className="flex items-center gap-2">
+              <Link
+                href="/"
+                className="text-sm text-gray-400 hover:text-sky-400 transition-colors px-2"
+              >
+                سایت
+              </Link>
+              <AdminLogoutButton compact />
+            </div>
           </div>
         </div>
 

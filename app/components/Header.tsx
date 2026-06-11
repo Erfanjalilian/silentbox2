@@ -3,30 +3,19 @@
 
 import React, { useState } from 'react';
 import Link from 'next/link';
-import { UserIcon, Bars3Icon, XMarkIcon } from '@heroicons/react/24/outline';
+import { Bars3Icon, XMarkIcon } from '@heroicons/react/24/outline';
 import { useCart } from '@/contexts/CartContext';
-import { useAuth } from '@/contexts/AuthContext';
 
 const Header: React.FC = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  // useCart() may have different shape depending on context type definitions.
-  // Coerce to any to safely access possible cart or items properties.
   const cartContext = useCart();
   const cart = (cartContext as any)?.cart ?? (cartContext as any)?.items ?? [];
-  const { user, isAuthenticated, isLoading } = useAuth();
   
   const cartCount = cart?.length || 0;
 
   const toggleMobileMenu = () => {
     setIsMobileMenuOpen(!isMobileMenuOpen);
   };
-
-  const accountHref = isAuthenticated ? (user?.role === 'admin' ? '/admin/users' : '/dashboard') : '/login';
-  const accountLabel = isLoading
-    ? '…'
-    : isAuthenticated
-      ? 'حساب کاربری'
-      : 'ورود';
 
   return (
     <>
@@ -64,45 +53,15 @@ const Header: React.FC = () => {
               </Link>
             </nav>
 
-            {/* Right side icons: Payment Button, User, Menu (mobile) */}
+            {/* Right side icons */}
             <div className="flex items-center gap-3 sm:gap-5">
-              {/* Payment Button - replaces cart icon */}
+              {/* Payment Button */}
               <Link 
                 href="/payment" 
                 className="relative bg-sky-500 hover:bg-sky-600 text-white px-4 py-2 rounded-lg text-sm font-medium transition-all duration-300 hover:scale-105"
               >
                 شیوه ی پرداخت
               </Link>
-
-              {isAuthenticated && user?.role === 'admin' && (
-                <Link
-                  href="/admin/users"
-                  className="hidden sm:inline text-sm text-sky-400/90 hover:text-sky-300 transition-colors"
-                >
-                  مدیریت
-                </Link>
-              )}
-              {/* User account */}
-              {isAuthenticated && user ? (
-                <Link
-                  href={accountHref}
-                  className="hidden sm:inline-flex items-center gap-2 rounded-full border border-sky-500/30 bg-sky-500/10 px-3 py-1 text-sm text-sky-100 transition-colors hover:bg-sky-500/20"
-                  aria-label="حساب کاربری"
-                >
-                  <UserIcon className="h-5 w-5" />
-                  <span className="truncate max-w-[8rem] text-sm text-sky-100">
-                    {user.firstName ? `${user.firstName} ${user.lastName}` : user.phone}
-                  </span>
-                </Link>
-              ) : (
-                <Link
-                  href="/login"
-                  className="hidden sm:inline-flex text-gray-300 hover:text-sky-400 transition-colors"
-                  aria-label="ورود"
-                >
-                  <UserIcon className="h-5 w-5 sm:h-6 sm:w-6" />
-                </Link>
-              )}
 
               {/* Mobile Menu Button */}
               <button 
@@ -183,32 +142,6 @@ const Header: React.FC = () => {
               >
                 <span>شیوه ی پرداخت</span>
               </Link>
-              
-              <div className="pt-6 border-t border-sky-500/30 space-y-4">
-                <Link
-                  href={accountHref}
-                  onClick={toggleMobileMenu}
-                  className="w-full flex items-center justify-between text-gray-300 hover:text-sky-400 transition-colors"
-                >
-                  <span>
-                  {isAuthenticated && user
-                    ? user.firstName
-                      ? `${user.firstName} ${user.lastName}`
-                      : user.phone
-                    : accountLabel}
-                </span>
-                  <UserIcon className="h-5 w-5" />
-                </Link>
-                {isAuthenticated && user?.role === 'admin' && (
-                  <Link
-                    href="/admin/users"
-                    onClick={toggleMobileMenu}
-                    className="block text-gray-300 hover:text-sky-400 transition-colors"
-                  >
-                    پنل مدیریت
-                  </Link>
-                )}
-              </div>
             </nav>
           </div>
         </div>

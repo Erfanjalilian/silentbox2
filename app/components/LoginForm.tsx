@@ -4,14 +4,12 @@ import React, { useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { Button } from "@/app/components/ui/Button";
 import { TextField } from "@/app/components/ui/TextField";
-import { useAuth } from "@/contexts/AuthContext";
 
 type Phase = "idle" | "sent";
 
 export default function LoginForm() {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const { refreshUser } = useAuth();
 
   const [phone, setPhone] = useState("");
   const [code, setCode] = useState("");
@@ -21,10 +19,11 @@ export default function LoginForm() {
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
 
+  // مقدار پیش‌فرض: اگر redirect وجود داشت به آن، وگرنه به admin/products
   const redirectTo =
     searchParams.get("redirect")?.startsWith("/") === true
       ? searchParams.get("redirect")!
-      : "/dashboard";
+      : "/admin/products";
 
   const handleSendOtp = async () => {
     setError(null);
@@ -72,8 +71,7 @@ export default function LoginForm() {
         return;
       }
 
-      await refreshUser();
-
+      // استفاده از redirectTo مستقیم - بدون نیاز به refreshUser
       const target =
         typeof data.redirectTo === "string" ? data.redirectTo : redirectTo;
       router.replace(target);

@@ -120,6 +120,18 @@ export async function parseSessionToken(
   }
 }
 
+export function buildAdminPasswordSessionPayload(): SessionPayload {
+  const exp = Math.floor(Date.now() / 1000) + SESSION_MAX_AGE_SEC;
+  return {
+    sub: "admin-panel",
+    phone: "admin-panel",
+    role: "admin",
+    firstName: "مدیر",
+    lastName: "سایت",
+    exp,
+  };
+}
+
 export function buildSessionPayload(
   phone: string,
   profile: { firstName: string; lastName: string; email?: string },

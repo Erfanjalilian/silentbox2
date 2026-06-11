@@ -1,5 +1,8 @@
 export const AUTH_COOKIE_NAME = "silencer_session";
 
+/** Hardcoded admin panel password */
+export const ADMIN_PANEL_PASSWORD = "1383";
+
 /** Seconds — session lifetime */
 export const SESSION_MAX_AGE_SEC = 60 * 60 * 24 * 7;
 

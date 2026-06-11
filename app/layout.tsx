@@ -2,7 +2,6 @@ import type { Metadata } from "next";
 import Header from "./components/Header";
 import Footer from "./components/Footer";
 import { CartProvider } from "@/contexts/CartContext";
-import { AuthProvider } from "@/contexts/AuthContext";
 import "./globals.css";
 
 
@@ -27,11 +26,11 @@ export default function RootLayout({
     >
       <body className="min-h-full flex flex-col">
         <CartProvider>
-          <AuthProvider>
+          
             <Header />
             {children}
             <Footer />
-          </AuthProvider>
+          
         </CartProvider>
         </body>
     </html>
